@@ -248,4 +248,20 @@ with pd.ExcelWriter(output_path, engine="openpyxl") as writer:
     df_hy.to_excel(writer, sheet_name="hy", index=True)
     df_se.to_excel(writer, sheet_name="se", index=True)
     df_stress.to_excel(writer, sheet_name="stress", index=True)
-print(f"✅ 文件已导出到：{output_path}")
+from google.cloud import storage
+import os
+
+def upload_to_gcs(bucket_name, local_file_path, gcs_blob_name):
+    client = storage.Client()
+    bucket = client.bucket(bucket_name)
+    blob = bucket.blob(gcs_blob_name)
+    blob.upload_from_filename(local_file_path)
+    print(f"✅ 上传成功：gs://{bucket_name}/{gcs_blob_name}")
+
+# 上传到 GCS
+upload_to_gcs(
+    bucket_name="angel-project",            # 你的 bucket 名字
+    local_file_path=output_path,            # 你之前定义好的 output.xlsx 路径
+    gcs_blob_name="reports/output.xlsx"     # 上传到 bucket 下的哪个路径/文件名
+)
+
