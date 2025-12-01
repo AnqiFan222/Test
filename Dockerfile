@@ -8,7 +8,7 @@ WORKDIR /app
 COPY . .
 
 # 安装必要的依赖包（你 test.py 实际用到的）
-RUN pip install --no-cache-dir pandas numpy scipy openpyxl
+RUN pip install --no-cache-dir pandas numpy scipy openpyxl requests
 
 # 设置容器启动时运行的脚本
 CMD ["python", "test.py"]
