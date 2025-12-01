@@ -257,7 +257,6 @@ def upload_to_gcs(bucket_name, local_file_path, gcs_blob_name):
     blob = bucket.blob(gcs_blob_name)
     blob.upload_from_filename(local_file_path)
     print(f"✅ 上传成功：gs://{bucket_name}/{gcs_blob_name}")
-
 # 上传到 GCS
 upload_to_gcs(
     bucket_name="angel-project",            # 你的 bucket 名字
