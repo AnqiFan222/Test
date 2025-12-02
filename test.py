@@ -162,7 +162,7 @@ df_stress = compute_date_range_zscore(df_stress, 'stress_index', 180, 'stress_in
 df_stress = df_stress.tail(40)
 
 # ---------------- Export ----------------
-output_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "output_updated.xlsx")
+output_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "output.xlsx")
 with pd.ExcelWriter(output_path, engine="openpyxl") as writer:
     df_rrp.to_excel(writer, sheet_name="rrp")
     df_srf.to_excel(writer, sheet_name="srf")
@@ -173,3 +173,18 @@ with pd.ExcelWriter(output_path, engine="openpyxl") as writer:
     df_se.to_excel(writer, sheet_name="se")
     df_stress.to_excel(writer, sheet_name="stress")
 print(f"✅ 已导出到: {output_path}")
+from google.cloud import storage
+import os
+
+def upload_to_gcs(bucket_name, local_file_path, gcs_blob_name):
+    client = storage.Client()
+    bucket = client.bucket(bucket_name)
+    blob = bucket.blob(gcs_blob_name)
+    blob.upload_from_filename(local_file_path)
+    print(f"✅ 上传成功：gs://{bucket_name}/{gcs_blob_name}")
+# 上传到 GCS
+upload_to_gcs(
+    bucket_name="angel-project",           
+    local_file_path=output_path,            
+    gcs_blob_name="reports/output.xlsx"     
+)
